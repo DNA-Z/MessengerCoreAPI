@@ -29,9 +29,9 @@ namespace iMessengerCoreAPI.DialogsClientsApp.Controllers
             RGDialogsClients dialogs = new RGDialogsClients();
             var allDialogs = dialogs.Init();
 
-            var idDialogs = allDialogs.Select(x => x.IDRGDialog).Distinct().ToList();
+            var idDialogs = allDialogs.Select(x => x.IDRGDialog).Distinct().ToArray();
        
-            for(int i = 0; i < idDialogs.Count; i++)
+            for(int i = 0; i < idDialogs.Length; i++)
             {
                 var idClients = allDialogs.Where(x => x.IDRGDialog == idDialogs[i])
                     .Select(u => u.IDClient).OrderBy(x => x).ToList();
