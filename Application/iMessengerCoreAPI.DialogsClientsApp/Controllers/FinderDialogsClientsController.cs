@@ -2,6 +2,7 @@ using iMessengerCoreAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace iMessengerCoreAPI.DialogsClientsApp.Controllers
 {
@@ -29,18 +30,10 @@ namespace iMessengerCoreAPI.DialogsClientsApp.Controllers
             RGDialogsClients dialogs = new RGDialogsClients();
             var allDialogs = dialogs.Init();
 
-            var idDialogs = allDialogs.Select(x => x.IDRGDialog).Distinct().ToArray();
-       
-            for(int i = 0; i < idDialogs.Length; i++)
-            {
-                var idClients = allDialogs.Where(x => x.IDRGDialog == idDialogs[i])
-                    .Select(u => u.IDClient).OrderBy(x => x).ToList();
-
-                if(idClients.SequenceEqual(idClientsInput.OrderBy(o => o)))
-                    return idDialogs[i];
-            }
-
-            return Guid.Empty;
+            return allDialogs.GroupBy(x => x.IDRGDialog)
+                .Where(x => x.Select(y => y.IDClient).OrderBy(y => y)
+                .SequenceEqual(idClientsInput.OrderBy(o => o)))
+                .Select(x => x.Key).FirstOrDefault();
         }
     }
 }
